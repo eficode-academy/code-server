@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: code-server
+  namespace: workshopctl
+spec:
+  rules:
+  - host: coder-online.192.168.122.131.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: code-server
+          servicePort: 80
+        path: /
