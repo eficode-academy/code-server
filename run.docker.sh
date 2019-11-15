@@ -1,3 +1,5 @@
+#Running VS Code as a container
+
 docker run -d \
        --network host \
        --name vscode \
