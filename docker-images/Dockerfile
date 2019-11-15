@@ -1,4 +1,4 @@
-FROM codercom/code-server:2.1650-vsc1.39.2
+FROM codercom/code-server:2.1692-vsc1.39.2
 
 # Install needed utilities, e.g. Git is essential for the IDE
 USER root
