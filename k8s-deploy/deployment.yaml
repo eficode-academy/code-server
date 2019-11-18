@@ -25,7 +25,7 @@ spec:
             secretKeyRef:
               key: VSCODE_PASSWORD
               name: workshopctl
-        image: luxas/k8s-web-ide:v2.0.0
+        image: praqma/vscode:1.39.2
         imagePullPolicy: Always
         name: code-server
         ports:
