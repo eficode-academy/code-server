@@ -91,10 +91,10 @@ echo -n "new_Password" | base64
 ```
 
 #### Deploy to Kubernetes
-Now apply the YAML in the folder ```k8s-deploy``` with ```kubectl```
+Now apply the YAML by running the script from the top folder.
 
 ```
-kubectl apply -f k8s-deploy/*
+./kubectl.apply.sh
 ```
 
 Now open a browser and go to the url specified in the ```k8s-deploy/ingress.yaml``` file.
