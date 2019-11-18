@@ -1,7 +1,8 @@
 # VS Code-server
 Run VS Code on Kubernetes as Pods with tools and access to the cluster
 
-## Building the container
+## Running VS Code on a Docker host
+### Building the container
 
 If you want to push the Docker image to the Docker hub registry, edit the file docker.build.sh and change the organization from Praqma to one you have access to. Then simply run the script
 
@@ -55,7 +56,7 @@ Successfully tagged praqma/vscode:1.39.2
 
 ```
 
-## Running the container on a Docker host
+### Running the container on a Docker host
 
 Before running the container, edit the ```file docker.run.sh``` and change ```GIT_REPO``` to a repository you want cloned, ```PASSWORD``` to a password of your choice, ```CODE_PORT``` to the port you want VS Code to run on. Then run the start script:
 
@@ -63,12 +64,42 @@ Before running the container, edit the ```file docker.run.sh``` and change ```GI
 ./docker.run.sh
 ```
 
-Open a browser and point it to localhost:[the port you chose]. If you didnt change anything, that would be localhost:5050
+Open a browser and point it to localhost:[the port you chose]. If you didn't change anything, that would be localhost:5050
 
 You will be met with a screen asking for a password:
 ![VSCode password screen](media/VSCode-password.png)
 
-If you didnt change the password in ```docker.run.sh``` simply type ```praqma``` and hut ```Enter IDE```.
+If you didn't change the password in ```docker.run.sh``` simply type ```praqma``` and hit ```Enter IDE```.
 
 You should now see the VS Code  like this:
 ![VSCode screenshot](media/VSCode-screenshot.png)
+
+
+## Deploying to Kubernetes
+### Editing the YAML
+#### Namespace
+If you want to use a different namespace then workshopctl, then edit all files and change that field.
+
+#### Ingress
+First we need to edit the YAML. Start by editing the ```k8s-deploy/ingress.yaml```. Change the host field under rules to the url you want. I'm using MetalLB and Traefik with nip.io. If you dont have a DNS to point to the service, simply change the IP in the current hostname to the IP that is you Ingress controller. Then nip.io will resolve it to that.
+
+#### Password
+The password for VS Code is stored in a secret. Edit the file ```k0s-deploy/secret.yaml``` and change to password to whatever you want. Remember, it needs to be base64 encoded:
+
+```
+echo -n "new_Password" | base64
+```
+
+#### Deploy to Kubernetes
+Now apply the YAML in the folder ```k8s-deploy``` with ```kubectl```
+
+```
+kubectl apply -f k8s-deploy/*
+```
+
+Now open a browser and go to the url specified in the ```k8s-deploy/ingress.yaml``` file.
+
+
+
+
+
