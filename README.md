@@ -1,5 +1,5 @@
 # VS Code-server
-Run VS Code on Kubernetes as Pods with tools and access to the cluster
+Run VS Code on a Docker host or Kubernetes as Pods with tools and access to the cluster
 
 ## Running VS Code on a Docker host
 ### Building the container
