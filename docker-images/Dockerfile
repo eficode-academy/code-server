@@ -9,7 +9,8 @@ RUN apt-get update && \
         nano \
         docker.io \
         npm \
-        bsdtar && \
+        bsdtar \
+        docker-compose && \
     apt-get clean
 
 # Install kubectl
