@@ -25,8 +25,11 @@ RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | sudo
 
 USER coder
 
+# To avoid EACCES issues on f.ex Crostini (ChromeOS)
+RUN mkdir -p /home/coder/.local/share/code-server
+
 # Install extensions
-ENV EXTENSIONS="redhat.vscode-yaml PeterJausovec.vscode-docker"
+ENV EXTENSIONS="redhat.vscode-yaml PeterJausovec.vscode-docker ms-kubernetes-tools.vscode-kubernetes-tools"
 # Maybe upgrade to ms-azuretools.vscode-docker that is v0.8.2 instead of
 # PeterJausovec.vscode-docker that's pinned to v0.6.2?
 # https://github.com/microsoft/vscode-docker/blob/master/CHANGELOG.md#L79
