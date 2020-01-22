@@ -1,30 +1,30 @@
 version: 2.1
 jobs:
-    build:
-        docker:
-            - image: circleci/buildpack-deps:stretch
-        environment:
-            IMAGE_NAME: building-on-ci:ci
-        steps:
-            - checkout
-            - setup_remote_docker
-            - run:
-                name: Build Docker image
-                command: |
-                  cd docker-images && docker build -t $IMAGE_NAME .
-    test-with-goss:
-        environment:
-            IMAGE_NAME: building-on-ci:ci
-            GOSS_FILES_PATH: docker-images/
-            GOSS_FILES_STRATEGY: cp
-        docker:
-            - image: kiwicom/dgoss
-        steps:
-            - checkout
-            - setup_remote_docker
-            - run:
-                name: Test image with dgoss
-                command: dgoss run $IMAGE_NAME
+  build:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    environment:
+      IMAGE_NAME: building-on-ci:ci
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            cd docker-images && docker build -t $IMAGE_NAME .
+  test-with-goss:
+    environment:
+      IMAGE_NAME: building-on-ci:ci
+      GOSS_FILES_PATH: docker-images/
+      GOSS_FILES_STRATEGY: cp
+    docker:
+      - image: kiwicom/dgoss
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Test image with dgoss
+          command: dgoss run $IMAGE_NAME
 
 workflows:
   version: 2
@@ -34,5 +34,11 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
                 - /no-build/.*
+      - test-with-goss:
+          filters:
+            branches:
+              ignore:
+                - /no-build/.*
+          requires:
+            - build
