@@ -1,10 +1,12 @@
 version: 2.1
 jobs:
-  build:
+  build-and-test:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: kiwicom/dgoss
     environment:
       IMAGE_NAME: building-on-ci:ci
+      GOSS_FILES_PATH: /root/project/docker-images/
+      GOSS_FILES_STRATEGY: cp
     steps:
       - checkout
       - setup_remote_docker
@@ -13,28 +15,6 @@ jobs:
           command: |
             cd docker-images && docker build -t $IMAGE_NAME .
       - run:
-          name: Archive Docker image
-          command: docker save -o image.tar $IMAGE_NAME
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./image.tar
-  test-with-goss:
-    environment:
-      IMAGE_NAME: building-on-ci:ci
-      GOSS_FILES_PATH: /root/project/docker-images/
-      GOSS_FILES_STRATEGY: cp
-    docker:
-      - image: kiwicom/dgoss
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
           name: Test image with dgoss
           command: dgoss run -e SECURE=true $IMAGE_NAME
 
@@ -42,15 +22,9 @@ workflows:
   version: 2
   build-verify:
     jobs:
-      - build:
+      - build-and-test:
           filters:
             branches:
               ignore:
+                - master
                 - /no-build/.*
-      - test-with-goss:
-          filters:
-            branches:
-              ignore:
-                - /no-build/.*
-          requires:
-            - build
