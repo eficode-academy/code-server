@@ -22,7 +22,7 @@ jobs:
   test-with-goss:
     environment:
       IMAGE_NAME: building-on-ci:ci
-      GOSS_FILES_PATH: project/docker-images/
+      GOSS_FILES_PATH: /root/project/docker-images/
       GOSS_FILES_STRATEGY: cp
     docker:
       - image: kiwicom/dgoss
@@ -36,7 +36,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Test image with dgoss
-          command: dgoss run $IMAGE_NAME
+          command: dgoss run -e SECURE=true $IMAGE_NAME
 
 workflows:
   version: 2
