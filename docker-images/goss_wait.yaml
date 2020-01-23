@@ -1,0 +1,5 @@
+---
+addr:
+  tcp://localhost:8080:
+    reachable: true
+    timeout: 15

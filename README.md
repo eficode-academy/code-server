@@ -3,61 +3,11 @@ Run VS Code on a Docker host or Kubernetes as Pods with tools and access to the 
 
 ## Running VS Code on a Docker host
 ### Building the container
+If you want to build locally, you can simply run `./docker.build.sh`. If you want to push the Docker image to the Docker hub registry, edit the file `docker.build.sh` and change the organization from Praqma to one you have access to.
 
-If you want to push the Docker image to the Docker hub registry, edit the file docker.build.sh and change the organization from Praqma to one you have access to. Then simply run the script
-
-```
-./docker.build.sh
-
-Sending build context to Docker daemon  8.192kB
-Step 1/14 : FROM codercom/code-server:2.1692-vsc1.39.2
- ---> 5ace6cdc3088
-Step 2/14 : USER root
- ---> Using cache
- ---> cb4fc5426553
-Step 3/14 : RUN apt-get update &&     apt-get install -y --no-install-recommends         git         curl         nano         docker.io         npm         bsdtar &&     apt-get clean
- ---> Using cache
- ---> 800812299bef
-Step 4/14 : ENV K8S_VERSION=v1.16.2
- ---> Using cache
- ---> e4e4becc8abd
-Step 5/14 : RUN curl -sSL https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl > /usr/local/bin/kubectl &&     chmod +x /usr/local/bin/kubectl
- ---> Using cache
- ---> 8ef1da0cdd66
-Step 6/14 : ENV HELM_HOME=/root/.helm
- ---> Using cache
- ---> f2f37e5dc48b
-Step 7/14 : ENV HELM_VERSION=v3.0.0-beta.5
- ---> Using cache
- ---> f82f4ac1a856
-Step 8/14 : RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin linux-amd64/helm --strip-components=1
- ---> Using cache
- ---> 330219f008a1
-Step 9/14 : USER coder
- ---> Using cache
- ---> 479493f72659
-Step 10/14 : ENV EXTENSIONS="redhat.vscode-yaml PeterJausovec.vscode-docker"
- ---> Using cache
- ---> 690737f5d129
-Step 11/14 : RUN for ext in ${EXTENSIONS}; do code-server --install-extension ${ext} &&     (cd /home/coder/.local/share/code-server/extensions/${ext}*/ &&     npm install || echo "ignore possible errors"); done
- ---> Using cache
- ---> ca327e1a8fb9
-Step 12/14 : COPY --chown=coder:coder entrypoint.sh /
- ---> Using cache
- ---> dffce221b6b0
-Step 13/14 : COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/settings.json
- ---> Using cache
- ---> 6915fb196976
-Step 14/14 : ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
- ---> Using cache
- ---> d49bda78680f
-Successfully built d49bda78680f
-Successfully tagged praqma/vscode:1.39.2
-
-```
+If you want to contribute a change to [praqma/vscode](https://hub.docker.com/repository/docker/praqma/vscode), see [Contributing](#Contributing).
 
 ### Running the container on a Docker host
-
 Before running the container, edit the ```file docker.run.sh``` and change ```GIT_REPO``` to a repository you want cloned, ```PASSWORD``` to a password of your choice, ```CODE_PORT``` to the port you want VS Code to run on. Then run the start script:
 
 ```
@@ -100,6 +50,57 @@ Now apply the YAML by running the script from the top folder.
 Now open a browser and go to the url specified in the ```k8s-deploy/ingress.yaml``` file.
 
 
+# Contributing
+Create a branch, and make any change you want. Every commit you push will automatically be tested on [CircleCI](https://app.circleci.com/github/praqma-training/code-server/pipelines). Alternatively, you can run the tests locally. The only requirement is to have Docker installed, and then running the script: 
+```bash
+$ cd docker-images
+$ ./test-with-dgoss.sh
+Sending build context to Docker daemon  10.75kB
+[ ...Docker build stuff goes here... ]
+Successfully built 00da90588af1
+Successfully tagged praqma/vscode:tmp
+INFO: Creating docker container
+INFO: Copy goss files into container
+INFO: Starting docker container
+INFO: Container ID: d68dcd2b
+INFO: Found goss_wait.yaml, waiting for it to pass before running tests
+INFO: Sleeping for 0.2
+INFO: Container health
+PID                 USER                TIME                COMMAND
+22624               1000                0:00                dumb-init /entrypoint.sh
+22663               1000                0:00                code-server --cert --host=0.0.0.0 --port=8080 --auth=password --disable-telemetry
+22726               1000                0:00                /usr/local/bin/code-server --cert --host=0.0.0.0 --port=8080 --auth=password --disable-telemetry
+INFO: Running Tests
+Process: code-server: running: matches expectation: [true]
+Port: tcp:8080: listening: matches expectation: [true]
+Port: tcp:8080: ip: matches expectation: [["0.0.0.0"]]
+HTTP: https://localhost:8080/login: status: matches expectation: [200]
 
 
+Total Duration: 0.036s
+Count: 4, Failed: 0, Skipped: 0
+INFO: Deleting container
+```
 
+When you are confident that your change is ready, either merge it to `master` (if you are an aproved contributor), or create a pull request. In general, we prefer getting feedback from others before merging to `master`.
+
+Whenever a change is pushed to `master`, Docker Hub automatically picks it up and updates `praqma/vscode:latest`.
+
+### (Optional) Build an image with a version-tag
+Docker Hub will automatically create a tagged Docker image if a tag is pushed to GitHub.
+### The Release Candidate
+
+1. Use Git to checkout a specific commit from the master branch.
+1. Use `git tag v1.0.0-rc.1` to tag the commit.
+    > Of course, we create a release candidate before we make a release!
+1. Push the tag to your GitHub repository with `git push --tags`
+1. Go to Docker Hub, a build should trigger and an image tagged `1.0.0-rc.1`
+  should be available shortly.
+
+### The Release
+
+1. Run the release candidate docker container and verify that it's good.
+1. Use Git to checkout the release candidate commit, `git checkout v1.0.0-rc.1`
+1. Tag the commit as a version `git tag v1.0.0`.
+1. Push the tag to you GitHub repository, `git push --tags`
+1. You can inspect the build and image shortly after on Docker Hub.

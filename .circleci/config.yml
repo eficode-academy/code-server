@@ -1,0 +1,30 @@
+version: 2.1
+jobs:
+  build-and-test:
+    docker:
+      - image: praqma/dgoss:0.3.7
+    environment:
+      IMAGE_NAME: building-on-ci:ci
+      GOSS_FILES_PATH: /root/project/docker-images/
+      GOSS_FILES_STRATEGY: cp
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            cd docker-images && docker build -t $IMAGE_NAME .
+      - run:
+          name: Test image with dgoss
+          command: dgoss run -e SECURE=true $IMAGE_NAME
+
+workflows:
+  version: 2
+  build-verify:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore:
+                - master
+                - /no-build/.*
