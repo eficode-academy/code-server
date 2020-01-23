@@ -3,9 +3,9 @@ Run VS Code on a Docker host or Kubernetes as Pods with tools and access to the 
 
 ## Running VS Code on a Docker host
 ### Building the container
-If you want to build locally, you can simply run `./docker.build.sh`.
+If you want to build locally, you can simply run `./docker.build.sh`. If you want to push the Docker image to the Docker hub registry, edit the file `docker.build.sh` and change the organization from Praqma to one you have access to.
 
-If you want to push the Docker image to the Docker hub registry, see [Contributing](#Contributing).
+If you want to contribute a change to [praqma/vscode](https://hub.docker.com/repository/docker/praqma/vscode), see [Contributing](#Contributing).
 
 ### Running the container on a Docker host
 Before running the container, edit the ```file docker.run.sh``` and change ```GIT_REPO``` to a repository you want cloned, ```PASSWORD``` to a password of your choice, ```CODE_PORT``` to the port you want VS Code to run on. Then run the start script:
