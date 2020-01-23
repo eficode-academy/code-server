@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: kiwicom/dgoss
+      - image: praqma/dgoss:0.3.7
     environment:
       IMAGE_NAME: building-on-ci:ci
       GOSS_FILES_PATH: /root/project/docker-images/
