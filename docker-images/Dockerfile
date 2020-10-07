@@ -1,4 +1,4 @@
-FROM codercom/code-server:2.1692-vsc1.39.2
+FROM codercom/code-server:3.5.0
 
 # Install needed utilities, e.g. Git is essential for the IDE
 USER root
@@ -15,13 +15,13 @@ RUN apt-get update && \
     apt-get clean
 
 # Install kubectl
-ENV K8S_VERSION=v1.16.2
+ENV K8S_VERSION=v1.19.2
 RUN curl -sSL https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl > /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
 # Install helm
 ENV HELM_HOME=/root/.helm
-ENV HELM_VERSION=v3.0.0-beta.5
+ENV HELM_VERSION=v3.3.4
 RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin linux-amd64/helm --strip-components=1
 
 USER coder
