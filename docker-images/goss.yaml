@@ -1,7 +1,7 @@
 #Test that the code-server process is running
-process:
-  code-server:
-    running: true
+#process:
+#  code-server:
+#    running: true
 
 #Test that git, docker, kubectl and helm are installed. We expect docker and kubectl commands to fail due to no connection.
 command:
@@ -22,7 +22,7 @@ command:
     - "Client Version:"
     timeout: 5000
   helm-version:
-    exit-status: 0
+    exit-status: 1
     exec: "helm list"
     timeout: 5000
 
