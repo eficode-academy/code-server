@@ -1,1 +1,1 @@
-docker build -t praqma/vscode:3.5.0 docker-images/.
+docker build -t praqma/vscode:3.6.2 docker-images/.
