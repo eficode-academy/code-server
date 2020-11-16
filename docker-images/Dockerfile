@@ -1,17 +1,18 @@
-FROM codercom/code-server:3.5.0
+FROM codercom/code-server:3.6.2
 
 # Install needed utilities, e.g. Git is essential for the IDE
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        git \
-        curl \
-        nano \
-        docker.io \
-        npm \
-        bsdtar \
-        docker-compose \
-        gnupg2 pass && \
+    git \
+    curl \
+    nano \
+    docker.io \
+    npm \
+    bsdtar \
+    docker-compose \
+    bash-completion \
+    gnupg2 pass && \
     apt-get clean
 
 # Install kubectl
@@ -41,6 +42,8 @@ RUN for ext in ${EXTENSIONS}; do code-server --install-extension ${ext} && \
 
 COPY --chown=coder:coder entrypoint.sh /
 COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/settings.json
+
+RUN echo 'source <(kubectl completion bash)' >>~/.bashrc
 
 # By default run behind a Let's Encrypt proxy
 ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
