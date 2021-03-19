@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.6.2
+FROM codercom/code-server:3.9.1
 
 # Install needed utilities, e.g. Git is essential for the IDE
 USER root
@@ -16,7 +16,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Install kubectl
-ENV K8S_VERSION=v1.19.2
+ENV K8S_VERSION=v1.20.5
 RUN curl -sSL https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl > /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
