@@ -22,8 +22,9 @@ RUN curl -sSL https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl >
 
 # Install helm
 ENV HELM_HOME=/root/.helm
-ENV HELM_VERSION=v3.3.4
+ENV HELM_VERSION=v3.5.4
 RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin linux-amd64/helm --strip-components=1
+RUN helm completion bash > /etc/bash_completion.d/helm
 
 USER coder
 
